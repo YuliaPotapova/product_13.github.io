@@ -1,14 +1,10 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-
-const routUsers = require('./routes/users.js');
-const routCards = require('./routes/cards.js');
-
-const { PORT = 3000 } = process.env;
+const {
+  express, mongoose, bodyParser, PORT, DATABASE_URL,
+} = require('./config');
+const routes = require('./routes/routes');
 
 mongoose.set('useUnifiedTopology', true);
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect(DATABASE_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -25,9 +21,6 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use('/users', routUsers);
-app.use('/cards', routCards);
-app.use((req, res) => res.status(404).json({ message: 'Запрашиваемый ресурс не найден' }));
+app.use(routes);
 
 app.listen(PORT);

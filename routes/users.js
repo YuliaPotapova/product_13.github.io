@@ -1,4 +1,6 @@
-const routUsers = require('express').Router();
+const { express } = require('../config');
+
+const routUsers = express.Router();
 const {
   getAllUsers, getUser, createUser, updateUser, updateAvatar,
 } = require('../controllers/users');

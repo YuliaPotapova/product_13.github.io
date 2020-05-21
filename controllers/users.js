@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const NotFoundError = require('../errors/notFoundError');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -8,16 +9,9 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        res.status(404).send({ message: 'Нет пользователя с таким id' });
-      } else {
-        res.send({ data: user });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
-    });
+    .orFail(() => new NotFoundError('Нет пользователя с таким id'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => res.status(err.statusCode || 500).send({ message: err.message }));
 };
 
 module.exports.createUser = (req, res) => {
@@ -26,8 +20,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        // res.status(400).send({ message: 'Данные пользователя введены некорректно' });
-        res.status(400).send({ message: err.message });
+        res.status(400).send({ message: 'Данные пользователя введены некорректно' });
       } else {
         res.status(500).send({ message: err.message });
       }
