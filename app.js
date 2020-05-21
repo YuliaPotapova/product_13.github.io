@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -7,6 +7,7 @@ const routCards = require('./routes/cards.js');
 
 const { PORT = 3000 } = process.env;
 
+mongoose.set('useUnifiedTopology', true);
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,

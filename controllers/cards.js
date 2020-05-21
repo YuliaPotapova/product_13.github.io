@@ -37,7 +37,13 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Нет карточки с таким id' });
+      } else {
+        res.send({ data: card });
+      }
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
@@ -47,6 +53,12 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Нет карточки с таким id' });
+      } else {
+        res.send({ data: card });
+      }
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
