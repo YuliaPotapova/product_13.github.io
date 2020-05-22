@@ -1,8 +1,6 @@
-const { express } = require('../config');
+const routes = require('express').Router();
 const routUsers = require('./users');
 const routCards = require('./cards');
-
-const routes = express.Router();
 
 routes.use('/users', routUsers);
 routes.use('/cards', routCards);

@@ -4,7 +4,7 @@ const NotFoundError = require('../errors/notFoundError');
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -15,16 +15,23 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректное название карточки или неверная ссылка на ресурс' });
       } else {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
     });
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(() => new NotFoundError('Нет карточки с таким id'))
-    .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: err.message }));
+    .then(async (card) => {
+      await Card.deleteOne(card);
+      res.send({ data: card });
+    })
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      const message = statusCode === 500 ? 'Произошла ошибка' : err.message;
+      res.status(statusCode).send({ message });
+    });
 };
 
 module.exports.likeCard = (req, res) => {
@@ -35,7 +42,11 @@ module.exports.likeCard = (req, res) => {
   )
     .orFail(() => new NotFoundError('Нет карточки с таким id'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: err.message }));
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      const message = statusCode === 500 ? 'Произошла ошибка' : err.message;
+      res.status(statusCode).send({ message });
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -46,5 +57,9 @@ module.exports.dislikeCard = (req, res) => {
   )
     .orFail(() => new NotFoundError('Нет карточки с таким id'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(err.statusCode || 500).send({ message: err.message }));
+    .catch((err) => {
+      const statusCode = err.statusCode || 500;
+      const message = statusCode === 500 ? 'Произошла ошибка' : err.message;
+      res.status(statusCode).send({ message });
+    });
 };

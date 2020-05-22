@@ -1,7 +1,11 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const {
-  express, mongoose, bodyParser, PORT, DATABASE_URL,
+  PORT, DATABASE_URL,
 } = require('./config');
-const routes = require('./routes/routes');
+
+const routes = require('./routes');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose.connect(DATABASE_URL, {
