@@ -23,10 +23,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findById(req.params.cardId)
     .orFail(() => new NotFoundError('Нет карточки с таким id'))
-    .then(async (card) => {
-      await Card.deleteOne(card);
-      res.send({ data: card });
-    })
+    .then((card) => Card.deleteOne(card).then(() => res.send({ data: card })))
     .catch((err) => {
       const statusCode = err.statusCode || 500;
       const message = statusCode === 500 ? 'Произошла ошибка' : err.message;

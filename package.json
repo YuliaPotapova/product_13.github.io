@@ -1,6 +1,6 @@
 {
   "name": "product_13",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Проектная работа по темам: создание API.REST, базы данных",
   "main": "app.js",
   "scripts": {
